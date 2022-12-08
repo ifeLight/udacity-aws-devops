@@ -1,0 +1,93 @@
+Description: A simple server with VPC network
+Resources:
+  UdacityVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+  UdacitySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      CidrBlock: 10.0.0.0/24
+      VpcId: !Ref UdacityVpc
+  UdacityInternetGateway:
+    Type: AWS::EC2::InternetGateway
+  UdacityGatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      InternetGatewayId: !Ref UdacityInternetGateway
+      VpcId: !Ref UdacityVpc
+  UdacityRouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref UdacityVpc
+  UdacityDefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: UdacityGatewayAttachment
+    Properties:
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref UdacityInternetGateway
+      RouteTableId: !Ref UdacityRouteTable
+  UdacitySubnetRouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref UdacitySubnet
+      RouteTableId: !Ref UdacityRouteTable
+  UdacitySecurityGroupSSH:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable SSH access via port 22
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref UdacityVpc
+  UdacitySecurityGroupHTTP:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable HTTP access via port 80
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 0.0.0.0/0
+      VpcId: !Ref UdacityVpc
+  UdacityKeyPair:
+    Type: AWS::EC2::KeyPair
+    Properties:
+      KeyName: udacity-server-key
+  UdacityServer:
+    Type: AWS::EC2::Instance
+    DependsOn: UdacitySubnetRouteTableAssociation
+    Properties:
+      ImageId: ami-0530ca8899fac469f # Ubuntu Server 22.04 LTS (HVM)
+      InstanceType: t2.micro
+      KeyName: udacity
+      KeyName: !Ref UdacityKeyPair
+      NetworkInterfaces: 
+      - AssociatePublicIpAddress: "true"
+        DeviceIndex: "0"
+        GroupSet: 
+          - Ref: "UdacitySecurityGroupHTTP"
+          - Ref: "UdacitySecurityGroupSSH"
+        SubnetId: 
+          Ref: "UdacitySubnet"
+      Tags:
+        - Key: Name
+          Value: UdacityServer
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash -xe
+          sudo apt-get update
+          sudo apt-get install -y apache2
+          sudo systemctl start apache2
+          sudo systemctl enable apache2
+          echo "Hello from $(hostname -f)" | sudo tee /var/www/html/index.html
+Outputs:
+  InstancePublicIp:
+    Description: Public IP of our instance
+    Value: !GetAtt UdacityServer.PublicIp
+  WebUrl:
+    Description: Application endpoint
+    Value: !Join ["", ["http://", !GetAtt UdacityServer.PublicDnsName]]
