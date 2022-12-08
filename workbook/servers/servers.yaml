@@ -1,0 +1,6 @@
+Description: The servers for the workbook created
+
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names also called project name
+    Type: String
