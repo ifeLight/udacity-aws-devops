@@ -1,10 +1,9 @@
-Descrition: A network configuration for an AWS deployment
+Description: A network configuration for an AWS deployment
 
 Parameters:
   EnvironmentName:
     Description: An environment name that will be prefixed to resource names also called project name
     Type: String
-    Default: !Sub ${AWS::StackName}
 
   VpcCidr:
     Description: CIDR block for the VPC
