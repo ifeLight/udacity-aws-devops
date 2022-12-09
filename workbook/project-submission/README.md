@@ -33,17 +33,17 @@ git clone https://github.com/ifeLight/udacity-aws-devops.git project-app
 cd project-app/workbook/project-submission
 
 # Make the script executable
-sudo chmod +x create-server.sh
+sudo chmod +x create-servers.sh
 
 # Run the script, replace {stack-name} with your own stack name
-./create.sh {stack-name}
+./create-servers.sh {stack-name}
 ```
 
 To update the infrastructure, run the following command:
 
 ``` bash
 # Make the script executable
-sudo chmod +x update-server.sh
+sudo chmod +x update-servers.sh
 
 # Run the script, replace {stack-name} with your own stack name
 ./update.sh {stack-name}
@@ -53,7 +53,7 @@ To delete the infrastructure, run the following command:
 
 ``` bash
 # Make the script executable
-sudo chmod +x delete-server.sh
+sudo chmod +x delete-servers.sh
 
 # Run the script, replace {stack-name} with your own stack name
 ./delete.sh {stack-name}

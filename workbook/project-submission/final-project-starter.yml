@@ -1,4 +1,4 @@
-Desscription: A High Availability Infrastructure on AWS for Udacity Submission
+Description: A High Availability Infrastructure on AWS for Udacity Submission
 
 Parameters:
   # Paramenters are entirely optional.
@@ -50,11 +50,11 @@ Resources:
   # instace profile contains the IAM Role name(s) that we want to associate to our auto scaling EC2 Servers
   # never give too much permissions to your EC2 instances! if they get hacked, the permissions get hacked also!
   # in this example, I create a Role called UdacityS3ReadOnlyC2 and just give it a policy of S3 Read-Only Access
-  ProfileWithRolesForOurApp:
-    Type: AWS::IAM::InstanceProfile
-    Properties:
-      Roles:
-        - UdacityS3ReadOnlyEC2
+  # ProfileWithRolesForOurApp:
+  #   Type: AWS::IAM::InstanceProfile
+  #   Properties:
+  #     Roles:
+  #       - UdacityS3ReadOnlyEC2
 
   # --------------------------- The VPC Network    --------------------------------------------------
   # The Project VPC Network
@@ -271,8 +271,7 @@ Resources:
           FromPort: "80"
           ToPort: "80"
           CidrIp: 0.0.0.0/0
-      VpcId:
-        Fn::ImportValue: !Sub "${EnvironmentName}-VPC"
+      VpcId: !Ref ProjectVPC
       Tags:
         - Key: Name
           Value: !Sub "${EnvironmentName}-LoadBalancerSecurityGroup"
@@ -280,9 +279,10 @@ Resources:
   # ----------------------- The Key Pair -------------------------------------------------------
   # A Key Pair for SSH access to the instances
   InstanceKeyPair:
-    Type: AWS::EC2::KeyPair::KeyName
+    Type: AWS::EC2::KeyPair
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
-    Default: nd9990_keypair
+    Properties:
+      KeyName: !Sub ${EnvironmentName}-KeyPair
 
   # ----------------------- The Launch Configuration --------------------------------------------
   # A Launch Configuration for the Web Servers
@@ -306,9 +306,7 @@ Resources:
         - DeviceName: "/dev/sdk"
           Ebs:
             VolumeSize: "10"
-      Tags:
-        - Key: Name
-          Value: !Sub "${EnvironmentName}-WebAppLaunchConfig"
+            VolumeType: "gp2"
 
   # ----------------------- The Auto Scaling Group /Target / Load Balancers ---------------------------------------------
   # Web App Target Group
@@ -332,6 +330,7 @@ Resources:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties:
       LaunchConfigurationName: !Ref WebAppLaunchConfig
+      HealthCheckGracePeriod: 600
       MinSize: "2"
       MaxSize: "4"
       VPCZoneIdentifier:

@@ -86,8 +86,10 @@ Resources:
 
   # Instance Key Pair
   InstanceKeyPair:
-    Type: AWS::EC2::KeyPair::KeyName
+    Type: AWS::EC2::KeyPair
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
+    Properties:
+      KeyName: !Sub ${EnvironmentName}-KeyPair
 
   # A LaunchConfiguration that creates an EC2 instance with Ubuntu 22.04
   # UserData script that installs Apache and starts the service
@@ -111,9 +113,6 @@ Resources:
         - DeviceName: "/dev/sdk"
           Ebs:
             VolumeSize: "10"
-      Tags:
-        - Key: Name
-          Value: !Sub "${EnvironmentName}-WebAppLaunchConfig"
 
   # Web App Target Group
   WebAppTargetGroup:
@@ -146,7 +145,6 @@ Resources:
       Tags:
         - Key: Name
           Value: !Sub "${EnvironmentName}-WebAppAutoScalingGroup"
-          PropagateAtLaunch: true
 
   # A LoadBalancer that listens on port 80 and forwards to port 8080 on the EC2 instances
   WebAppLoadBalancer:
