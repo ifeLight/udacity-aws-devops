@@ -108,6 +108,10 @@ Resources:
       SecurityGroups:
         - Ref: WebServerSecGroup
       InstanceType: t2.micro
+      BlockDeviceMappings:
+        - DeviceName: "/dev/sdk"
+          Ebs:
+            VolumeSize: "10"
       Tags:
         - Key: Name
           Value: !Sub "${EnvironmentName}-WebAppLaunchConfig"
