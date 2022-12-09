@@ -101,6 +101,8 @@ Resources:
           sudo apt-get update -y
           sudo apt-get install apache2 -y
           sudo systemctl start apache2.service
+          cd /var/www/html
+          echo "My Web Server Up and Running!" > index.html
       ImageId: ami-0530ca8899fac469f # Ubuntu 22.04 LTS
       KeyName: !Ref InstanceKeyPair
       SecurityGroups:
