@@ -58,3 +58,9 @@ sudo chmod +x delete-servers.sh
 # Run the script, replace {stack-name} with your own stack name
 ./delete.sh {stack-name}
 ```
+
+#### A sample link
+
+``` bash
+http://udagram-webapploadbalancer-1012298569.us-west-2.elb.amazonaws.com/
+```
