@@ -88,7 +88,6 @@ Resources:
   InstanceKeyPair:
     Type: AWS::EC2::KeyPair::KeyName
     Description: Name of an existing EC2 KeyPair to enable SSH access to the instances
-    Default: nd9990_keypair
 
   # A LaunchConfiguration that creates an EC2 instance with Ubuntu 22.04
   # UserData script that installs Apache and starts the service
