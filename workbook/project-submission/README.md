@@ -10,6 +10,10 @@ Students may use a JSON file for increasing the generic nature of the YAML code.
 
 In YAML code, the `${EnvironmentName}` would be substituted with `UdacityProject` accordingly.
 
+### Diagram
+
+![The Udagram Architecture Diagram](udagram-architecture.jpeg "Udagram architecture")
+
 ### Usage
 
 Make sure you have the following installed:
@@ -62,5 +66,5 @@ sudo chmod +x delete-servers.sh
 #### A sample link
 
 ``` bash
-http://udagram-webapploadbalancer-1012298569.us-west-2.elb.amazonaws.com/
+http://udagram-webapploadbalancer-1743127452.us-west-2.elb.amazonaws.com/
 ```
